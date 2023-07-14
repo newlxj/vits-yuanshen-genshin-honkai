@@ -11,7 +11,8 @@ import torch
 from torch import no_grad, LongTensor
 import webbrowser
 import logging
-import gradio.processing_utils as gr_processing_utils
+# import gradio.processing_utils as gr_processing_utils
+from gradio_client import utils as client_utils
 logging.getLogger('numba').setLevel(logging.WARNING)
 limitation = os.getenv("SYSTEM") == "spaces"  # limit text and audio length in huggingface spaces
 
@@ -20,7 +21,8 @@ def audio_postprocess(self, y):
     data = audio_postprocess_ori(self, y)
     if data is None:
         return None
-    return gr_processing_utils.encode_url_or_file_to_base64(data["name"])
+    return client_utils.encode_url_or_file_to_base64(data["name"])
+    #return gr_processing_utils.encode_url_or_file_to_base64(data["name"])
 gr.Audio.postprocess = audio_postprocess
 
 def get_text(text, hps):
@@ -112,7 +114,7 @@ if __name__ == '__main__':
     with gr.Blocks() as app:
         gr.Markdown(
             "# <center> VITS语音在线合成demo\n"
-            "# <center> 严禁将模型用于任何商业项目，否则后果自负\n"
+            "# <center> 演示程序严禁将模型用于任何商业项目及违法项目,否则后果自负\n"
             "<div align='center'>主要有赛马娘，原神中文，原神日语，崩坏3的音色</div>"
             '<div align="center"><a><font color="#dd0000">结果有随机性，语调可能很奇怪，可多次生成取最佳效果</font></a></div>'
             '<div align="center"><a><font color="#dd0000">标点符号会影响生成的结果</font></a></div>'
@@ -147,4 +149,4 @@ if __name__ == '__main__':
                 gr.Radio(label="Speaker", choices=speakers, interactive=False, type="index")
     if args.colab:
         webbrowser.open("http://127.0.0.1:7860")
-    app.queue(concurrency_count=1, api_open=args.api).launch(share=args.share)
+    app.queue(concurrency_count=1, api_open=args.api).launch(server_name="0.0.0.0",share=args.share)
