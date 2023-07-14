@@ -6,23 +6,42 @@
 
 如果有conda环境，先创建conda：
 
+
+```
 conda craeate -n v python=3.9
+```
+
 
 
 # cuda加速推理，Nvidia显卡（可选）
+
+```
 用cuda推理速度能加快，本步骤也可以跳过
-
 根据当前显卡实际情况下载cuda，我这里用12.2自己根据实际情况选择
-
 https://developer.nvidia.com/cuda-12-2-0-download-archive
-
 下载后得到cuda_12.2.0_535.54.03_linux.run
-
 执行sh cuda_12.2.0_535.54.03_linux.run 具体过程可以网上查类似全部下一步...
+配置环境变量到当前用户
+vi /root/.profile
+export PATH=$PATH:/usr/local/cuda/bin
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/cuda/lib64
+可以下载最新的cuDNN能起到更好的优化（可选）
+https://developer.nvidia.com/cudnn （点下方Download cuDNN,需要有nvidia账号登陆下载)
+linux下载 Local Installer for Linux x86_64 (Tar)
+下载后tar -zxvf cudnn-linux-x86_64-8.9.2.26_cuda12-archive.tar.xz
+进入解压后的lib目录
+cp ./lib/* /usr/local/cuda/lib64/
+cp ./include/*  /usr/local/cuda/include/
+```
+
 
 
 # 安装依赖包
+
+```
 pip install -r requirements.txt
+```
+
 
 # model目录下数据文件
 
@@ -43,7 +62,11 @@ https://huggingface.co/spaces/zomehwh/vits-uma-genshin-honkai/tree/main/model
 
 # 使用方法
 
+
+```
 python app.py --device cuda
+```
+
 
 --device 不带默认是cpu
 
